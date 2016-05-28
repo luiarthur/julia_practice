@@ -9,12 +9,17 @@ tests = :(
 
   @vtest "Testing Cube" let
     C.r == 1 && C.c == 2 && C.l == 3
-    1==1
   end;
 
-  @vtest "Testing Cube z" let
-    C.z == 34;
-    C.z == 34;
+  @vtest "Testing Cube z" C.z == 34;
+
+  @vtest "Testing Cube oob" oob(C) == false;
+
+  @vtest "Testing Cube moveDir" let
+    dir = (1,2,3)
+    D = moveDir(C,dir)
+    TicTac.show(D)
+    oob(D) == true;
   end;
 
 )
