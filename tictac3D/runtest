@@ -1,0 +1,18 @@
+#!/bin/bash
+
+vulture -d 'src' '\w*.jl' julia --color=yes 'test/tests.jl'
+
+# Tests powered by vulture (David Dahl) and TestSuite.jl (Arthur Lui)
+#
+# vulture is a bash script created by David B. Dahl which can be found at
+# https://github.com/luiarthur/myBin/blob/master/vulture
+# 
+# You need to install inotify-tools to use vulture. In a terminal,
+# $ sudo apt-get install inotify-tools
+#
+# TestSuite.jl is a basic julia test suite created by Arthur Lui
+# To install TestSuite.jl, in Julia,
+# julia> Pkg.clone("https://github.com/luiarthur/TestSuite.jl.git")
+#
+# this script, runtest, sleeps until any of the files in 'src' changes, then
+# executes the test suite in 'test/tests/jl' in julia with color mode.
