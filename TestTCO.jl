@@ -1,9 +1,16 @@
+#= See:
+http://docs.julialang.org/en/release-0.4/manual/metaprogramming/
+http://docs.julialang.org/en/release-0.4/stdlib/test/
+http://docs.julialang.org/en/release-0.4/manual/control-flow/#man-exception-handling
+https://www.youtube.com/watch?v=EpNeNCGmyZE
+=#
+
 include("tco.jl")
 include("MyMacros.jl")
-using Base.Test, LogFact, MyMacros
+using Base.Test, MyMacros, LogFact
+
 
 function TestTCO()
-
   numPass = 0
   numFail = 0
   passColor = :cyan
@@ -16,18 +23,18 @@ function TestTCO()
   =#
 
   function custom_handler(r::Test.Success)
-    print_with_color(passColor, "Passed test: $(r.expr)\n")
+    #print_with_color(passColor, "Passed test: $(r.expr)\n")
     numPass += 1
   end
 
   function custom_handler(r::Test.Failure)
-    print_with_color(failColor, "Failed test : $(r.expr)\n")
+    #print_with_color(failColor, "Failed test : $(r.expr)\n")
     numFail += 1
   end
 
   function custom_handler(r::Test.Error) 
-    #rethrow(r)
-    print_with_color(failColor, "Error in test : $(r.expr)\n")
+    #print_with_color(failColor, "Error in test: $(r.expr)\n")
+    numFail += 1
   end
 
 
@@ -35,11 +42,10 @@ function TestTCO()
     println()
 
     # TESTS GO HERE:
-    @vtest "Test 1" (1==1)
-    eval( vtest("Test 2.0",:(logfact(3) == log(6))) )
-    @vtest "Test 2" logfact(3) == log(6)
+    @vtest "Arthur" (1==1)
+    @vtest "is " logfact(3) == log(6)
     @vtest "Test 3" logfact_woTCO(3) == log(6)
-    @vtest "Test 4" 1 == 2 
+    @vtest "1 == 2" 1 == 2 
     @vtest "Test 5" 1 == a
     @vtest "Test 6" let
       x = 1 == 1
@@ -52,8 +58,9 @@ function TestTCO()
     # END OF TESTS:
 
     printColor = numFail == 0 ? passColor : failColor
+    println()
     print_with_color(printColor, 
-      string("Tests Passed: ", numPass, " of ", numFail + numPass),"\n")
+      string("Tests Passed: ", numPass, " of ", numPass + numFail),"\n")
   end
 end
 
