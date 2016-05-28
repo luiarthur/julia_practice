@@ -7,7 +7,9 @@ function logfact(n)
  @bounce function loop(N, acc) 
    N == 0? acc : loop(N-1, log(N) + acc)
  end
- loop(n,0.0)
+ x = loop(n,0.0)
+ println(x)
+ x
 end
 
 function logfact_woTCO(n)

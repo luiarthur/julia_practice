@@ -33,15 +33,29 @@ failColor = :black
 stopColor = :red
 
 macro vtest(s::AbstractString, ex::Expr)
-  quote
-    try print_with_color($(esc(ex)) ? passColor : failColor, 
-      ($(esc(ex)) ? "Passed" : "Failed") * " Test: " * $s * "\n") 
+  #quote
+  #  try print_with_color($(esc(ex)) ? passColor : failColor, 
+  #    ($(esc(ex)) ? "Passed" : "Failed") * " Test: " * $s * "\n") 
+  #  catch
+  #    #throw($(esc(ex))) # can I print without stopping?
+  #    print_with_color(stopColor, "Error in test syntax: " * $s * "\n")
+  #  end
+  #  @test $(esc(ex))
+  #end
+  :(
+    msgColor = stopColor;
+    msg = "Erro in test syntax: ";
+    good = false;
+    try 
+      good = $ex;
+      msg, msgColor = good ? ("Passed",passColor) : ("Failed",failColor);
+      print_with_color(msgColor, msg * " Test: " * $s * "\n");
     catch
       #throw($(esc(ex))) # can I print without stopping?
-      print_with_color(stopColor, "Error in test syntax: " * $s * "\n")
-    end
-    @test $(esc(ex))
-  end
+      print_with_color(msgColor, msg * $s * "\n");
+    end;
+    @test good;
+  )
 end
 
 function testsuite(tests::Expr)
@@ -81,13 +95,16 @@ end
 
 #=
 include("TestSuite.jl")
+include("tco.jl");
 using TestSuite
 
 mytests = :(
+  using LogFact;
   @vtest "Test 1" 1==1;
   @vtest "Test 2" true==true;
   @vtest "Test 3" 2==1;
   @vtest "Test 4" 1==a;
+  @vtest "Test logfact" logfact(3) == log(6);
 )
 
 testsuite(mytests)
