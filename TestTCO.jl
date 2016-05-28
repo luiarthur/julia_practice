@@ -1,9 +1,9 @@
-include("MyMacros.jl")
 include("tco.jl")
-using Base.Test, LogFact
-import MyMacros.@vtest
+include("MyMacros.jl")
+using Base.Test, LogFact, MyMacros
 
 function TestTCO()
+
   numPass = 0
   numFail = 0
   passColor = :cyan
@@ -35,8 +35,9 @@ function TestTCO()
     println()
 
     # TESTS GO HERE:
-    @vtest "Test 1" true
-    @vtest "Test 2" :(logfact(3) == log(6))
+    @vtest "Test 1" (1==1)
+    eval( vtest("Test 2.0",:(logfact(3) == log(6))) )
+    @vtest "Test 2" logfact(3) == log(6)
     @vtest "Test 3" logfact_woTCO(3) == log(6)
     @vtest "Test 4" 1 == 2 
     @vtest "Test 5" 1 == a
@@ -47,6 +48,7 @@ function TestTCO()
     @vtest "Test 7" let
       1 == 2
     end
+    @vtest "Test 8" mean(1:3) == mean(4:6) - 3
     # END OF TESTS:
 
     printColor = numFail == 0 ? passColor : failColor

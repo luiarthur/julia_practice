@@ -1,5 +1,5 @@
 module MyMacros
-export @vtest
+export vtest, @vtest
 
 """
 I'd like to be able to do this:
@@ -24,14 +24,15 @@ Failed Test 4
 Passed 3 of 4 tests
 ```
 """
-macro vtest(s:: AbstractString, ex)
-  :(try print_with_color($ex ? :cyan : :red,
+function vtest(s:: AbstractString, ex::Expr)
+  return :(try print_with_color($ex ? :cyan : :black,
                     ($ex ? "Passed" : "Failed") * 
                      " Test: " * $s * "\n")
     catch
       print_with_color(:red, "Error in test: " * $s * "\n")
     end)
 end
+macro vtest(s, ex) vtest(s,ex) end
 
 
 end
