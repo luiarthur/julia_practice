@@ -1,6 +1,6 @@
 include("MyMacros.jl")
 include("tco.jl")
-using Base.Test
+using Base.Test, LogFact
 import MyMacros.@vtest
 
 function TestTCO()
@@ -35,16 +35,16 @@ function TestTCO()
     println()
 
     # TESTS GO HERE:
-    @assert  false "assert" 
-    @test  logfact(3) == log(6) 
-    @test   logfact_woTCO(3) == log(6)
-    @test   1 == 2 
-    @test   1 == a
-    @test   let
+    @vtest "Test 1" true
+    @vtest "Test 2" :(logfact(3) == log(6))
+    @vtest "Test 3" logfact_woTCO(3) == log(6)
+    @vtest "Test 4" 1 == 2 
+    @vtest "Test 5" 1 == a
+    @vtest "Test 6" let
       x = 1 == 1
       x
     end
-    @test  let
+    @vtest "Test 7" let
       1 == 2
     end
     # END OF TESTS:

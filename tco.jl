@@ -1,4 +1,7 @@
+module LogFact
+
 using Lazy, Base.Test
+export logfact, logfact_woTCO
 
 function logfact(n)
  @bounce function loop(N, acc) 
@@ -12,6 +15,8 @@ function logfact_woTCO(n)
    N == 0? acc : loop(N-1, log(N) + acc)
  end
  loop(n,0)
+end
+
 end
 
 #=
