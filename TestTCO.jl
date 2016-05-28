@@ -1,5 +1,7 @@
+include("MyMacros.jl")
 include("tco.jl")
 using Base.Test
+import MyMacros.@vtest
 
 function TestTCO()
   numPass = 0
@@ -14,33 +16,36 @@ function TestTCO()
   =#
 
   function custom_handler(r::Test.Success)
-    print_with_color(passColor, "Success on test: $(r.expr)\n")
+    print_with_color(passColor, "Passed test: $(r.expr)\n")
     numPass += 1
   end
 
-  function custom_handler(r::Test.Failure) 
-    print_with_color(failColor, "Error on test : $(r.expr)\n")
+  function custom_handler(r::Test.Failure)
+    print_with_color(failColor, "Failed test : $(r.expr)\n")
     numFail += 1
   end
 
   function custom_handler(r::Test.Error) 
-    rethrow(r)
+    #rethrow(r)
+    print_with_color(failColor, "Error in test : $(r.expr)\n")
   end
+
 
   Test.with_handler(custom_handler) do
     println()
 
     # TESTS GO HERE:
-    @test logfact(3) == log(6)
-    @test logfact_woTCO(3) == log(6)
-    @test 1 == 2
-    @test let
+    @assert  false "assert" 
+    @test  logfact(3) == log(6) 
+    @test   logfact_woTCO(3) == log(6)
+    @test   1 == 2 
+    @test   1 == a
+    @test   let
       x = 1 == 1
       x
     end
-    @test let
-      x = 1 == 2
-      x
+    @test  let
+      1 == 2
     end
     # END OF TESTS:
 
