@@ -13,7 +13,8 @@ tests = :(
   end;
 
   @vtest "Testing Cube z" let
-    C.z == 34
+    C.z == 34;
+    C.z == 34;
   end;
 
 )
