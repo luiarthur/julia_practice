@@ -1,7 +1,7 @@
 module TicTac
 
 using Lazy
-export Cube, Board, z, show, oob, moveDir
+export Cube, Board, z, show, oob, moveDir, winSets, Board, mark
 
 n = 4
 allCells = Set(1:n^3)
@@ -47,14 +47,15 @@ winSets = Set(map(y -> Set{Int}(collect(y)), filter(x -> x != Any[], collect(win
 
 
 immutable Board
-  comp
-  human
+  comp::Set{Int}
+  human::Set{Int}
   Board(comp,human) = new(comp,human)
 end
 emptyCells(B::Board) = setdiff(allCells, union(B.comp,B.human))
 
-function mark(player::Char, pos::Int)
-  player == 'C'? Board(union(comp,pos),human) : Board(comp,union(human,pos))
+function mark(player::Char, pos::Int, B::Board)
+  player == 'C'? Board( Set{Int}(union(B.comp,pos)) ,B.human) : 
+    Board(B.comp, Set{Int}(union(B.human,pos)) )
 end
 
 end # end of module Board
