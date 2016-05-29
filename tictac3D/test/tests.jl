@@ -22,6 +22,11 @@ tests = :(
     oob(D) == true;
   end;
 
+  @vtest "Testing Board" let 
+    B = Board(Set([1,2,3]),Set([]))
+    B.comp == Set([1,2,3])
+  end
+
 )
 
 testsuite(tests)
