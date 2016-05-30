@@ -43,6 +43,38 @@ tests = :(
     A.comp == Set([3]) && B.comp == Set{Int}() &&
     A.human == Set{Int}() && B.human == Set{Int}() 
   end;
+
+  @vtest "Print Board" let
+    B = Board(Set{Int}(),Set{Int}())
+    A = TicTac.mark('C',3,B)
+    A.comp == Set([3]) && B.comp == Set{Int}() &&
+    A.human == Set{Int}() && B.human == Set{Int}() 
+    println(toString(B));
+    println(toString(A));
+    1==1
+  end;
+
+  @vtest "Test Win in Board" let
+    B = Board(Set{Int}([1,2,3,4]),Set{Int}());
+    println(toString(B));
+    win('C',B) == true;
+  end;
+
+  @vtest "Test draw in Board" let
+    B = Board(Set{Int}([1,2,3,4]),Set{Int}())
+    draw(B) == false
+  end;
+
+  @vtest "Test lose in Board" let
+    B = Board(Set{Int}([1,2,3,4]),Set{Int}())
+    lose('H',B) == true
+  end;
+
+  @vtest "Print Winner" let
+    B = Board(Set{Int}([1,2,3,4]),Set{Int}())
+    println(string("The winner is ", winner(B)))
+    winner(B) == 'C'
+  end;
 )
 
 testsuite(tests)

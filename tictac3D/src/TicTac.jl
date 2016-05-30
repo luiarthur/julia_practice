@@ -1,7 +1,8 @@
 module TicTac
 
 using Lazy
-export Cube, Board, z, show, oob, moveDir, winSets, Board, mark
+export Cube, Board, z, show, oob, moveDir, winSets, Board, mark,
+       toString, win, lose, draw, inProg, winner, randomGame
 
 n = 4
 allCells = Set(1:n^3)
@@ -56,6 +57,49 @@ emptyCells(B::Board) = setdiff(allCells, union(B.comp,B.human))
 function mark(player::Char, pos::Int, B::Board)
   player == 'C'? Board( Set{Int}(union(B.comp,pos)) ,B.human) : 
     Board(B.comp, Set{Int}(union(B.human,pos)) )
+end
+
+function toString(B::Board)
+  out = ""
+  for k = 1:n
+    for j = 1:n
+      q = ""
+      out = string(out, "  ")
+      for i = 1:n
+        ind = i+n*(j-1)+n*n*(k-1)
+        p = in(ind, B.comp)? "C" : in(ind, B.human)? "H" : "_"
+        q = ind < 10 ? string(q,"  ") : string(q," ")
+        q = string(q, ind, " ")
+        out = string(out, p)
+      end
+      out = string(out, "  |  ", q, "\n")
+    end
+    out = string(out,"\n")
+  end
+  out
+end
+
+function win(player::Char,B::Board)
+  p = player == 'C'? B.comp : B.human
+  sum([w <= p for w in winSets]) > 0
+end
+opp(player::Char) = player == 'C'? 'H' : 'C'
+lose(player::Char, B::Board) = win(opp(player),B)
+draw(B::Board) = emptyCells(B) == Set{Int}() && !win('C',B) && !win('H',B)
+inProg(B::Board) = length(emptyCells(B))>0 && !win('C',B) && !win('H',B)
+function winner(B::Board)
+  if !draw(B)
+    win('C',B)? 'C' : 'H'
+  else
+    'D'
+  end
+end
+
+function randomGame(player::Char, B::Board)
+  if inProg(B)
+  else
+    B
+  end
 end
 
 end # end of module Board
