@@ -2,7 +2,8 @@ module TicTac
 
 using Lazy
 export Cube, Board, z, show, oob, moveDir, winSets, Board, mark,
-       toString, win, lose, draw, inProg, winner, randomGame
+       toString, win, lose, draw, inProg, winner, randomGame, randMove, winGame,
+       probWin, smartMove
 
 n = 4
 allCells = Set(1:n^3)
@@ -25,7 +26,8 @@ dirs_000 = collect([(i::Int,j::Int,k::Int) for i in lst, j in lst, k in lst])
 dirs = filter(x -> x != (0,0,0), dirs_000)
 coord = collect(1:n)
 function build(start::Cube, dir)
-  @bounce function loop(s::Cube, S::Set{Cube})
+  #@bounce function loop(s::Cube, S::Set{Cube})
+  function loop(s::Cube, S::Set{Cube})
     if (length(S) == n && !oob(s)) 
       S
     else
@@ -95,11 +97,36 @@ function winner(B::Board)
   end
 end
 
+randMove(player::Char, B::Board) = mark(player, rand(collect(emptyCells(B))), B)
+
 function randomGame(player::Char, B::Board)
   if inProg(B)
+    randomGame(opp(player),randMove(player,B))
   else
     B
   end
+end
+
+winGame(player::Char, B::Board) = winner(B)==player||draw(B)? 1 : 0
+
+probWin(player::Char, pos::Int, N::Int,B::Board) = 
+  mean(map(x -> winGame(player,randomGame(opp(player),mark(player,pos,B))), 1:N))
+
+# This is where I stop. This move takes 4 minutes (on my 8 core machine)
+# with an Empty Board. Perhaps this would be faster if multithreading were
+# possible. But, even if I changed the line below to pmap, the
+# overhead for threading is too great. So, I think I will stick
+# wtih Scala as my new language of choice. It's hip, fun, fast, 
+# and concise. Julia is only good for linear algebra. Definitely
+# not for general purpose. It's a great replacement for Matlab 
+# for sure. But not other general purpose languages for general
+# purpose work. The end. Goodbye Julia!
+function smartMove(player::Char,N::Int,B::Board)
+  cells = emptyCells(B)
+  probs = map(x -> probWin(player,x,N,B), cells)
+  maxprob,pos = findmax(probs)
+  println("Computer's Prob of Random Win: ",maxprob)
+  pos
 end
 
 end # end of module Board

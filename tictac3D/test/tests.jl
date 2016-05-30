@@ -75,6 +75,30 @@ tests = :(
     println(string("The winner is ", winner(B)))
     winner(B) == 'C'
   end;
+
+  @vtest "Random Move" let
+    B = Board(Set{Int}([1,2,3,4]),Set{Int}())
+    A = randMove('H',B)
+    println(toString(A))
+    1==1
+  end;
+
+
+  @vtest "Random Move" let
+    B = Board(Set{Int}(),Set{Int}())
+    A = randomGame('C',B)
+    println( toString(A) )
+    println( winner(A) )
+    1==1
+  end;
+
+  @vtest "Random Move Prob Win" let
+    B = Board(Set{Int}([1,2,3]),Set{Int}([7,5,6]))
+    #println( probWin('C',10,1000,B) )
+    @time println(smartMove('C',1000,B))
+    1==1
+  end;
+
 )
 
 testsuite(tests)
